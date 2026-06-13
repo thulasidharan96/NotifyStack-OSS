@@ -1,0 +1,58 @@
+[project]
+name = "notifystack-oss-backend"
+version = "0.1.0"
+description = "NotifyStack OSS backend"
+requires-python = ">=3.13"
+dependencies = [
+  "fastapi>=0.116.0",
+  "uvicorn>=0.35.0",
+  "sqlalchemy>=2.0.41",
+  "asyncpg>=0.30.0",
+  "aiosqlite>=0.20.0",
+  "pydantic>=2.11.0",
+  "pydantic-settings>=2.10.0",
+  "email-validator>=2.3.0",
+  "jinja2>=3.1.6",
+  "pyjwt>=2.10.1",
+  "passlib[bcrypt]>=1.7.4",
+  "redis>=6.2.0",
+  "nats-py>=2.10.0",
+  "alembic>=1.16.0"
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.4.0",
+  "pytest-asyncio>=1.0.0",
+  "pytest-cov>=6.2.1",
+  "httpx>=0.28.1",
+  "ruff>=0.12.0",
+  "mypy>=1.16.0",
+  "pre-commit>=4.2.0",
+  "coverage>=7.9.0",
+  "bandit>=1.8.5",
+  "pip-audit>=2.9.0"
+]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+asyncio_mode = "auto"
+pythonpath = ["backend"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "ASYNC"]
+ignore = ["B008"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = false
+warn_unused_configs = true
+plugins = ["pydantic.mypy"]
+exclude = ["^\\\\.venv/"]
+mypy_path = "backend"
+ignore_missing_imports = true
+explicit_package_bases = true
