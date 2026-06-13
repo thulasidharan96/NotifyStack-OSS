@@ -1,3 +1,6 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from app.core.config.settings import settings
 from app.modules.auth.api.router import router as auth_router
 from app.modules.events.api.router import router as events_router
@@ -13,7 +16,15 @@ from app.shared.exceptions.handlers import register_exception_handlers
 from app.shared.middleware.tenant import TenantMiddleware
 from fastapi import FastAPI
 
-app = FastAPI(title=settings.app_name)
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+
+
+app = FastAPI(title=settings.app_name, lifespan=lifespan)
 register_exception_handlers(app)
 app.add_middleware(TenantMiddleware)
 
@@ -26,12 +37,6 @@ app.include_router(templates_router, prefix=api_prefix)
 app.include_router(notifications_router, prefix=api_prefix)
 app.include_router(providers_router, prefix=api_prefix)
 app.include_router(workflows_router, prefix=api_prefix)
-
-
-@app.on_event("startup")
-async def startup() -> None:
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
 
 
 @app.get("/health")

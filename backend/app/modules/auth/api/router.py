@@ -1,6 +1,7 @@
 from app.modules.auth.schemas.common import LoginRequest, RefreshRequest, TokenPair
 from app.modules.auth.services.authorization import Principal, get_current_principal
 from app.modules.auth.services.security import JWTService
+from app.shared.exceptions.http import UnauthorizedException
 from fastapi import APIRouter, Depends
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -9,7 +10,9 @@ jwt_service = JWTService()
 
 @router.post("/login", response_model=TokenPair)
 async def login(payload: LoginRequest) -> TokenPair:
-    # Production systems validate user credentials via repository/service.
+    if payload.email != "owner@example.com" or payload.password != "secret":
+        raise UnauthorizedException("Invalid email or password")
+
     user_id = payload.email
     org_id = "00000000-0000-0000-0000-000000000001"
     role = "Owner"

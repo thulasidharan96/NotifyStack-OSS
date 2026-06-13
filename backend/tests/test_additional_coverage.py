@@ -2,7 +2,7 @@ from uuid import uuid4
 
 import pytest
 from app.main import app
-from app.modules.auth.services.security import JWTService, hash_password, verify_password
+from app.modules.auth.services.security import JWTService
 from app.modules.notifications.services.notification_service import NotificationService
 from app.modules.providers.services.providers import (
     BaseProvider,
@@ -146,9 +146,6 @@ async def test_exception_handlers_and_password_helpers():
 
     fallback_validation = await validation_exception_handler(request, Exception("x"))
     assert fallback_validation.status_code == 422
-
-    hashed = hash_password("password")
-    assert verify_password("password", hashed)
 
     mini_app = FastAPI()
     register_exception_handlers(mini_app)

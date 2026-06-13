@@ -4,7 +4,8 @@ services:
     ports:
       - "8000:8000"
     environment:
-      NOTIFYSTACK_DATABASE_URL: sqlite+aiosqlite:///./notifystack.db
+      POSTGRES_PASSWORD: postgres
+      NOTIFYSTACK_DATABASE_URL: postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@postgres:5432/notifystack
     depends_on:
       postgres:
         condition: service_healthy
