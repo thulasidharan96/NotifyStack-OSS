@@ -1,0 +1,28 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install uv
+        run: pip install uv
+      - name: Install dependencies
+        run: uv sync --all-groups
+      - name: pip-audit
+        run: |
+          uv export --format requirements-txt > requirements.txt
+          uv run pip-audit -r requirements.txt
+      - name: bandit
+        run: uv run bandit -r backend/app -lll
