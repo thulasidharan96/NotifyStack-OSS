@@ -9,6 +9,7 @@ from app.modules.organizations.api.router import router as organizations_router
 from app.modules.projects.api.router import router as projects_router
 from app.modules.providers.api.router import router as providers_router
 from app.modules.templates.api.router import router as templates_router
+from app.modules.users.api.router import router as users_router
 from app.modules.workflows.api.router import router as workflows_router
 from app.shared.database.base import Base
 from app.shared.database.session import engine
@@ -37,6 +38,7 @@ app.include_router(templates_router, prefix=api_prefix)
 app.include_router(notifications_router, prefix=api_prefix)
 app.include_router(providers_router, prefix=api_prefix)
 app.include_router(workflows_router, prefix=api_prefix)
+app.include_router(users_router, prefix=api_prefix)
 
 
 @app.get("/health")
