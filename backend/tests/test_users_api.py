@@ -97,7 +97,7 @@ async def test_delete_user(client: AsyncClient):
     # We will test without permission first
     del_headers = {
         "X-Organization-Id": "00000000-0000-0000-0000-000000000001",
-        "X-Api-Key": "some-key" # Default principal is Admin, which is allowed.
+        "X-Api-Key": "some-key",  # Default principal is Admin, which is allowed.
     }
     del_response_no_perm = await client.delete(
         f"/api/v1/users/{user_id}",
@@ -112,14 +112,12 @@ async def test_delete_user(client: AsyncClient):
         assert user is None
         break
 
+
 @pytest.mark.asyncio
 async def test_delete_user_not_found(client: AsyncClient):
     response = await client.delete(
         "/api/v1/users/00000000-0000-0000-0000-000000000000",
-        headers={
-            "X-Organization-Id": "00000000-0000-0000-0000-000000000001",
-            "x-api-key": "some-key"
-        }
+        headers={"X-Organization-Id": "00000000-0000-0000-0000-000000000001", "x-api-key": "some-key"},
     )
     assert response.status_code == 404
     assert response.json()["detail"] == "User not found"
